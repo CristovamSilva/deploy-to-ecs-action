@@ -17,6 +17,9 @@ inputs:
   docker-build-contexts:
     description: "List of additional build contexts (e.g., name=path)"
     required: false
+  docker-build-ssh:
+    description: "List of SSH agent socket or keys to expose to the build"
+    required: false
 
   aws-iam-role:
     description: IAM role with permissions to update services and task definitions.
@@ -104,7 +107,8 @@ runs:
         builder: ${{ steps.buildx.outputs.name }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-        file: ${{ inputs.dockerfile }} # ${{ steps.dockerfile.outputs.file }}
+        file: ${{ steps.dockerfile.outputs.file }}
+        ssh: ${{ inputs.docker-build-ssh }}
         context: ${{ inputs.docker-context }}
         build-contexts: ${{ inputs.docker-build-contexts }}
         tags: ${{ steps.image-tag.outputs.tag }}
